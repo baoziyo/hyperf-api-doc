@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Hyperf\ApiDocs\Swagger;
+namespace Baoziyoo\Hyperf\ApiDocs\Swagger;
 
+use Baoziyoo\Hyperf\DTO\Mapper;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\DTO\Mapper;
-use OpenApi\Annotations\OpenApi;
 
 class SwaggerConfig
 {
@@ -15,8 +14,6 @@ class SwaggerConfig
     private string $output_dir = '';
 
     private string $prefix_url = '';
-
-    private bool $validation_custom_attributes = false;
 
     private array $responses = [];
 
@@ -55,11 +52,6 @@ class SwaggerConfig
         return $this->prefix_url;
     }
 
-    public function isValidationCustomAttributes(): bool
-    {
-        return $this->validation_custom_attributes;
-    }
-
     public function getResponses(): array
     {
         return $this->responses;
@@ -89,6 +81,6 @@ class SwaggerConfig
 
     public function getFormat(): string
     {
-        return $this->format == 'json' ? 'json' : 'yaml';
+        return $this->format === 'json' ? 'json' : 'yaml';
     }
 }

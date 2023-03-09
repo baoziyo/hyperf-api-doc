@@ -2,34 +2,23 @@
 
 declare(strict_types=1);
 
-namespace HyperfExample\ApiDocs\DTO\Request;
+namespace Baoziyoo\Hyperf\Example\DTO\Request;
 
-use Hyperf\ApiDocs\Annotation\ApiModelProperty;
-use Hyperf\DTO\Annotation\ArrayType;
-use Hyperf\DTO\Annotation\Validation\Between;
-use Hyperf\DTO\Annotation\Validation\Email;
-use Hyperf\DTO\Annotation\Validation\In;
-use Hyperf\DTO\Annotation\Validation\Integer;
-use Hyperf\DTO\Annotation\Validation\Nullable;
-use Hyperf\DTO\Annotation\Validation\Required;
-use Hyperf\DTO\Annotation\Validation\Validation;
-use Hyperf\DTO\SimpleType;
-use HyperfExample\ApiDocs\DTO\Address;
-use HyperfExample\ApiDocs\Enum\StatusEnum;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiModelProperty;
+use Baoziyoo\Hyperf\DTO\Annotation\ArrayType;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\Between;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\Email;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\In;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\Integer;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\Nullable;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\Required;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\Validation;
+use Baoziyoo\Hyperf\DTO\SimpleType;
+use Baoziyoo\Hyperf\Example\DTO\Address;
+use Baoziyoo\Hyperf\Example\Enum\StatusEnum;
 
 class DemoBodyRequest
 {
-//    public const IN = ['A', 'B', 'C'];
-//
-//    public Address $addr1;
-//
-//    public Address $addr2;
-//
-//    #[ApiModelProperty('地址')]
-//
-//    #[Required]
-//    public Address $addr3;
-
     #[ApiModelProperty('int数组')]
     #[Required]
     #[ArrayType(SimpleType::INT)]

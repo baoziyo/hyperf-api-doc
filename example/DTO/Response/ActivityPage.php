@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HyperfExample\ApiDocs\DTO\Response;
+namespace Baoziyoo\Hyperf\Example\DTO\Response;
 
 use Hyperf\Contract\LengthAwarePaginatorInterface;
 

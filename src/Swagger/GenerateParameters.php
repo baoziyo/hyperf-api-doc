@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Hyperf\ApiDocs\Swagger;
+namespace Baoziyoo\Hyperf\ApiDocs\Swagger;
 
-use Hyperf\ApiDocs\Annotation\ApiFormData;
-use Hyperf\ApiDocs\Annotation\ApiHeader;
-use Hyperf\ApiDocs\Annotation\ApiModelProperty;
-use Hyperf\ApiDocs\Annotation\BaseParam;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiFormData;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiHeader;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiModelProperty;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\BaseParam;
+use Baoziyoo\Hyperf\DTO\ApiAnnotation;
+use Baoziyoo\Hyperf\DTO\Scan\MethodParametersManager;
+use Baoziyoo\Hyperf\DTO\Scan\PropertyManager;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\In;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\Required;
 use Hyperf\Di\MethodDefinitionCollectorInterface;
 use Hyperf\Di\ReflectionManager;
-use Hyperf\DTO\Annotation\Validation\In;
-use Hyperf\DTO\Annotation\Validation\Required;
-use Hyperf\DTO\ApiAnnotation;
-use Hyperf\DTO\Scan\MethodParametersManager;
-use Hyperf\DTO\Scan\PropertyManager;
 use Hyperf\Utils\Arr;
 use OpenApi\Attributes as OA;
 use Psr\Container\ContainerInterface;
@@ -27,15 +27,16 @@ class GenerateParameters
      * @param ApiFormData[] $apiFormDataArr
      */
     public function __construct(
-        private string $controller,
-        private string $action,
-        private array $apiHeaderArr,
-        private array $apiFormDataArr,
-        private ContainerInterface $container,
-        private MethodDefinitionCollectorInterface $methodDefinitionCollector,
-        private SwaggerComponents $swaggerComponents,
-        private SwaggerCommon $common,
-    ) {
+        private readonly string $controller,
+        private readonly string $action,
+        private readonly array $apiHeaderArr,
+        private readonly array $apiFormDataArr,
+        private readonly ContainerInterface $container,
+        private readonly MethodDefinitionCollectorInterface $methodDefinitionCollector,
+        private readonly SwaggerComponents $swaggerComponents,
+        private readonly SwaggerCommon $common
+    )
+    {
     }
 
     public function generate(): array
@@ -47,6 +48,7 @@ class GenerateParameters
         $requestFormDataclass = '';
         $parameterArr = $this->getParameterArrByBaseParam($this->apiHeaderArr);
         $definitions = $this->methodDefinitionCollector->getParameters($this->controller, $this->action);
+
         foreach ($definitions as $definition) {
             // query path
             $parameterClassName = $definition->getName();
@@ -67,7 +69,7 @@ class GenerateParameters
 
             if ($this->container->has($parameterClassName)) {
                 $methodParameter = MethodParametersManager::getMethodParameter($this->controller, $this->action, $paramName);
-                if ($methodParameter == null) {
+                if ($methodParameter === null) {
                     continue;
                 }
 
@@ -79,18 +81,18 @@ class GenerateParameters
                     $result['requestBody'] = $requestBody;
                 }
                 if ($methodParameter->isRequestQuery()) {
-                    $parameterArr = array_merge($parameterArr, $this->getParameterArrByClass($parameterClassName, 'query'));
+                    $parameterArr += $this->getParameterArrByClass($parameterClassName, 'query');
                 }
                 if ($methodParameter->isRequestHeader()) {
-                    $parameterArr = array_merge($parameterArr, $this->getParameterArrByClass($parameterClassName, 'header'));
+                    $parameterArr += $this->getParameterArrByClass($parameterClassName, 'header');
                 }
                 if ($methodParameter->isRequestFormData()) {
                     $requestFormDataclass = $parameterClassName;
                 }
             }
         }
-        //Form表单
-        if (! empty($requestFormDataclass) || ! empty($this->apiFormDataArr)) {
+        // Form表单
+        if (!empty($requestFormDataclass) || !empty($this->apiFormDataArr)) {
             $requestBody = new OA\RequestBody();
             $requestBody->required = true;
             // $requestBody->description = '';
@@ -146,10 +148,10 @@ class GenerateParameters
             $requiredAnnotation = ApiAnnotation::getProperty($parameterClassName, $reflectionProperty->getName(), Required::class);
             /** @var In $inAnnotation */
             $inAnnotation = ApiAnnotation::getProperty($parameterClassName, $reflectionProperty->getName(), In::class);
-            if (! empty($inAnnotation)) {
+            if ($inAnnotation !== null) {
                 $schema->enum = $inAnnotation->getValue();
             }
-            if (! empty($enum)) {
+            if ($enum !== null) {
                 $schema->enum = $enum->valueList;
             }
             if ($apiModelProperty->required !== null) {

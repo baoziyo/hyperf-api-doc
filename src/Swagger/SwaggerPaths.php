@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Hyperf\ApiDocs\Swagger;
+namespace Baoziyoo\Hyperf\ApiDocs\Swagger;
 
-use Hyperf\ApiDocs\Annotation\Api;
-use Hyperf\ApiDocs\Annotation\ApiFormData;
-use Hyperf\ApiDocs\Annotation\ApiHeader;
-use Hyperf\ApiDocs\Annotation\ApiOperation;
-use Hyperf\ApiDocs\Annotation\ApiResponse;
-use Hyperf\ApiDocs\Annotation\ApiSecurity;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\Api;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiFormData;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiHeader;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiOperation;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiResponse;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiSecurity;
+use Baoziyoo\Hyperf\DTO\ApiAnnotation;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Di\Annotation\MultipleAnnotationInterface;
-use Hyperf\DTO\ApiAnnotation;
 use Hyperf\HttpServer\Annotation\AutoController;
 use JetBrains\PhpStorm\Deprecated;
 use OpenApi\Annotations\Operation;
@@ -25,23 +25,24 @@ class SwaggerPaths
 {
     public int $index = 0;
 
+    /** @var array<string,array> */
     public array $classMethodArray = [];
 
     public function __construct(
         public string $serverName,
         public ConfigInterface $config,
         public StdoutLoggerInterface $stdoutLogger,
-        private SwaggerOpenApi $swaggerOpenApi,
-        private SwaggerCommon $common,
+        private readonly SwaggerOpenApi $swaggerOpenApi,
+        private readonly SwaggerCommon $common,
     ) {
     }
 
     /**
      * 增加一条路由.
      */
-    public function addPath(string $className, string $methodName, string $route, string $methods): void
+    public function addPath(string $className, string $methodName, string $route, string $methods, PathItem $pathItem = null): void
     {
-        $pathItem = new PathItem();
+        $pathItem = $pathItem ?? new PathItem();
         // 获取类中方法的位置
         $position = $this->getMethodNamePosition($className, $methodName);
         $classAnnotation = ApiAnnotation::classMetadata($className);
@@ -53,7 +54,7 @@ class SwaggerPaths
 
         // AutoController Validation POST
         $autoControllerAnnotation = $classAnnotation[AutoController::class] ?? null;
-        if ($autoControllerAnnotation && $methods != 'POST') {
+        if ($autoControllerAnnotation && $methods !== 'POST') {
             return;
         }
         $methodAnnotations = AnnotationCollector::getClassMethodAnnotation($className, $methodName);
@@ -75,7 +76,7 @@ class SwaggerPaths
         $simpleClassName = $this->common->getSimpleClassName($className);
         if (is_array($apiControllerAnnotation->tags)) {
             $tags = $apiControllerAnnotation->tags;
-        } elseif (! empty($apiControllerAnnotation->tags) && is_string($apiControllerAnnotation->tags)) {
+        } elseif (!empty($apiControllerAnnotation->tags) && is_string($apiControllerAnnotation->tags)) {
             $tags = [$apiControllerAnnotation->tags];
         } else {
             $tags = [$simpleClassName];
@@ -125,11 +126,14 @@ class SwaggerPaths
 
     /**
      * 获取安全认证
+     * @param mixed $classAnnotation
+     * @param mixed $methodAnnotations
+     * @return array|false
      */
-    protected function getSecurity($classAnnotation, $methodAnnotations): array|false
+    protected function getSecurity(mixed $classAnnotation, mixed $methodAnnotations): array|false
     {
         $apiOperation = $methodAnnotations[ApiOperation::class] ?? new ApiOperation();
-        if (! $apiOperation->security) {
+        if (!$apiOperation->security) {
             return [];
         }
 
@@ -175,7 +179,7 @@ class SwaggerPaths
                 foreach ($toAnnotations as $annotation) {
                     if ($annotation instanceof ApiSecurity) {
                         // 存在需要设置的security
-                        if (! empty($annotation->name)) {
+                        if (!empty($annotation->name)) {
                             $result[][$annotation->name] = $annotation->value;
                         }
                     }

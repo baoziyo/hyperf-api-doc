@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace HyperfExample\ApiDocs\DTO\Response;
+namespace Baoziyoo\Hyperf\Example\DTO\Response;
 
-use App\Model\Activity;
-use Hyperf\ApiDocs\Annotation\ApiModelProperty;
-use Hyperf\DTO\Mapper;
-use HyperfExample\ApiDocs\DTO\ActivityUser;
+use App\Model\Activity;;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiModelProperty;
+use Baoziyoo\Hyperf\DTO\Mapper;
+use Baoziyoo\Hyperf\Example\DTO\ActivityUser;
 
 class ActivityResponse
 {

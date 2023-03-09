@@ -2,24 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Hyperf\ApiDocs\Swagger;
+namespace Baoziyoo\Hyperf\ApiDocs\Swagger;
 
-use Hyperf\ApiDocs\Annotation\ApiModel;
-use Hyperf\ApiDocs\Annotation\ApiModelProperty;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiModel;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiModelProperty;
+use Baoziyoo\Hyperf\DTO\ApiAnnotation;
+use Baoziyoo\Hyperf\DTO\Scan\PropertyManager;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\In;
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Di\ReflectionManager;
-use Hyperf\DTO\Annotation\Validation\In;
-use Hyperf\DTO\ApiAnnotation;
-use Hyperf\DTO\Scan\PropertyManager;
 use OpenApi\Attributes as OA;
 
 class SwaggerComponents
 {
     protected static array $schemas = [];
 
-    public function __construct(
-        private SwaggerCommon $common,
-    ) {
+    public function __construct(private readonly SwaggerCommon $common)
+    {
     }
 
     public function getSchemas(): array
@@ -85,29 +84,26 @@ class SwaggerComponents
                     // 普通简单类型
                     $property->type = $swaggerType;
                 }
-            }
-            // 枚举:in
-            elseif (! empty($inAnnotation)) {
+            } // 枚举:in
+            elseif (!empty($inAnnotation)) {
                 $property->type = $swaggerType;
                 $property->enum = $inAnnotation->getValue();
-            }
-            // 枚举类型
+            } // 枚举类型
             elseif ($propertyClass->enum) {
                 $property->type = $this->common->getSwaggerType($propertyClass->enum->backedType);
                 $property->enum = $propertyClass->enum->valueList;
-            }
-            // 普通类
+            } // 普通类
             else {
                 if ($swaggerType == 'array') {
                     $property->type = 'array';
-                    if (! empty($propertyClass->arrClassName)) {
+                    if (!empty($propertyClass->arrClassName)) {
                         $items = new OA\Items();
                         $items->ref = $this->common->getComponentsName($propertyClass->arrClassName);
                         $property->items = $items;
 
                         $this->generateSchemas($propertyClass->arrClassName);
                     }
-                    if (! empty($propertyClass->arrSimpleType)) {
+                    if (!empty($propertyClass->arrSimpleType)) {
                         $items = new OA\Items();
                         $items->type = $this->common->getSwaggerType($propertyClass->arrSimpleType);
                         $property->items = $items;

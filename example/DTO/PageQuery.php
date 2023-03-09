@@ -2,14 +2,12 @@
 
 declare(strict_types=1);
 
-namespace HyperfExample\ApiDocs\DTO;
+namespace Baoziyoo\Hyperf\Example\DTO;
 
-use Hyperf\ApiDocs\Annotation\ApiModelProperty;
-use HyperfExample\ApiDocs\Enum\StatusEnum;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiModelProperty;
 
 class PageQuery
 {
-
     #[ApiModelProperty('页数')]
     public ?int $page = null;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hyperf\ApiDocs\Annotation;
+namespace Baoziyoo\Hyperf\ApiDocs\Annotation;
 
 use Attribute;
 

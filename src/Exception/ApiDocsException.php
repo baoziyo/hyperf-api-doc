@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hyperf\ApiDocs\Exception;
+namespace Baoziyoo\Hyperf\ApiDocs\Exception;
 
 use Hyperf\Server\Exception\RuntimeException;
 

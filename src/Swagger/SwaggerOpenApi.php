@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Hyperf\ApiDocs\Swagger;
+namespace Baoziyoo\Hyperf\ApiDocs\Swagger;
 
-use Hyperf\ApiDocs\Exception\ApiDocsException;
-use Hyperf\DTO\Mapper;
+use Baoziyoo\Hyperf\ApiDocs\Exception\ApiDocsException;
+use Baoziyoo\Hyperf\DTO\Mapper;
 use OpenApi\Attributes as OA;
 use OpenApi\Attributes\OpenApi;
 use OpenApi\Attributes\Tag;
@@ -23,9 +23,8 @@ class SwaggerOpenApi
 
     private array $componentsSchemas = [];
 
-    public function __construct(
-        private SwaggerConfig $swaggerConfig,
-    ) {
+    public function __construct(private readonly SwaggerConfig $swaggerConfig)
+    {
     }
 
     public function init(): void
@@ -63,7 +62,7 @@ class SwaggerOpenApi
      */
     public function setOpenapiVersion(): void
     {
-        if (! empty($this->swaggerConfig->getSwagger()['openapi'])) {
+        if (!empty($this->swaggerConfig->getSwagger()['openapi'])) {
             $this->openApi->openapi = $this->swaggerConfig->getSwagger()['openapi'];
         }
     }
@@ -73,7 +72,7 @@ class SwaggerOpenApi
      */
     public function setSecurity(): void
     {
-        if (! empty($this->swaggerConfig->getSwagger()['security'])) {
+        if (!empty($this->swaggerConfig->getSwagger()['security'])) {
             $this->openApi->security = $this->swaggerConfig->getSwagger()['security'];
         }
     }
@@ -109,11 +108,11 @@ class SwaggerOpenApi
     public function save(string $serverName): void
     {
         // 设置paths
-        while (! $this->queuePaths->isEmpty()) {
+        while (!$this->queuePaths->isEmpty()) {
             $this->openApi->paths[] = $this->queuePaths->extract();
         }
         // 设置tags
-        while (! $this->queueTags->isEmpty()) {
+        while (!$this->queueTags->isEmpty()) {
             $this->openApi->tags[] = $this->queueTags->extract();
         }
         // 设置components->schemas

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace HyperfExample\ApiDocs\DTO;
+namespace Baoziyoo\Hyperf\Example\DTO;
 
-use Hyperf\ApiDocs\Annotation\ApiModelProperty;
-use Hyperf\DTO\Annotation\Validation\Required;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiModelProperty;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\Required;
 
 class Address
 {
@@ -13,6 +13,11 @@ class Address
 
     #[ApiModelProperty('浮点数')]
     public float $float;
+
+    public int $int;
+
+    /** @var array<int,string> */
+    public array $array;
 
     #[ApiModelProperty('城市')]
     #[Required]

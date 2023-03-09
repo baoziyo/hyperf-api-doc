@@ -2,7 +2,12 @@
 
 declare(strict_types=1);
 
-namespace HyperfExample\ApiDocs\DTO;
+namespace Baoziyoo\Hyperf\Example\DTO;
+
+use Baoziyoo\Hyperf\DTO\Annotation\Contracts\RequestBody;
+use Baoziyoo\Hyperf\DTO\Annotation\Contracts\RequestQuery;
+use Baoziyoo\Hyperf\DTO\Annotation\Contracts\RequestFormData;
+
 
 class ActivityUser
 {

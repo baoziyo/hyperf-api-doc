@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Hyperf\ApiDocs\Swagger;
+namespace Baoziyoo\Hyperf\ApiDocs\Swagger;
 
-use Hyperf\ApiDocs\Annotation\ApiResponse;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiResponse;
 use Hyperf\Di\MethodDefinitionCollectorInterface;
-use Hyperf\Di\ReflectionType;
 use Hyperf\Utils\Arr;
 use OpenApi\Attributes as OA;
 use Psr\Container\ContainerInterface;
@@ -14,14 +13,14 @@ use Psr\Container\ContainerInterface;
 class GenerateResponses
 {
     public function __construct(
-        private string $className,
-        private string $methodName,
-        private array $apiResponseArr,
-        private SwaggerConfig $swaggerConfig,
-        private MethodDefinitionCollectorInterface $methodDefinitionCollector,
-        private ContainerInterface $container,
-        private SwaggerComponents $swaggerComponents,
-        private SwaggerCommon $common,
+        private readonly string $className,
+        private readonly string $methodName,
+        private readonly array $apiResponseArr,
+        private readonly SwaggerConfig $swaggerConfig,
+        private readonly MethodDefinitionCollectorInterface $methodDefinitionCollector,
+        private readonly ContainerInterface $container,
+        private readonly SwaggerComponents $swaggerComponents,
+        private readonly SwaggerCommon $common,
     ) {
     }
 
@@ -30,7 +29,6 @@ class GenerateResponses
      */
     public function generate(): array
     {
-        /** @var ReflectionType $definitions */
         $definition = $this->methodDefinitionCollector->getReturnType($this->className, $this->methodName);
         $returnTypeClassName = $definition->getName();
         // 全局
@@ -44,7 +42,7 @@ class GenerateResponses
         $response->response = $code;
         $response->description = 'successful operation';
         $content = $this->getContent($returnTypeClassName);
-        $content && $response->content = $content;
+        $response->content = $content;
         $arr[$code] = $response;
 
         $annotationResp && $arr = Arr::merge($arr, $annotationResp);
@@ -115,8 +113,8 @@ class GenerateResponses
             $apiResponse = new ApiResponse();
             $apiResponse->response = $value['response'];
             $apiResponse->description = $value['description'] ?? null;
-            ! empty($value['type']) && $apiResponse->type = $value['type'];
-            ! empty($value['isArray']) && $apiResponse->isArray = $value['isArray'];
+            !empty($value['type']) && $apiResponse->type = $value['type'];
+            !empty($value['isArray']) && $apiResponse->isArray = $value['isArray'];
 
             $resp[$apiResponse->response] = $this->getOAResp($apiResponse);
         }
@@ -128,7 +126,7 @@ class GenerateResponses
         $response = new OA\Response();
         $response->response = $apiResponse->response;
         $response->description = $apiResponse->description;
-        if (! empty($apiResponse->type)) {
+        if (!empty($apiResponse->type)) {
             $content = $this->getContent($apiResponse->type, $apiResponse->isArray);
             $content && $response->content = $content;
         }

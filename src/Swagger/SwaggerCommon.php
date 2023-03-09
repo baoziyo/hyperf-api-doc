@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hyperf\ApiDocs\Swagger;
+namespace Baoziyoo\Hyperf\ApiDocs\Swagger;
 
 use ReflectionProperty;
 use Throwable;
@@ -47,19 +47,19 @@ class SwaggerCommon
         } catch (Throwable) {
             $type = 'string';
         }
+
         return $type;
     }
 
     /**
      * 获取swagger类型.
-     * @param $phpType
      */
-    public function getSwaggerType($phpType): string
+    public function getSwaggerType(?string $phpType): string
     {
         return match ($phpType) {
             'int', 'integer' => 'integer',
             'boolean', 'bool' => 'boolean',
-            'double', 'float','number' => 'number',
+            'double', 'float', 'number' => 'number',
             'array' => 'array',
             'object' => 'object',
             default => 'string',
@@ -82,14 +82,13 @@ class SwaggerCommon
 
     /**
      * 判断是否为简单类型.
-     * @param $type
      */
-    public function isSimpleType($type): bool
+    public function isSimpleType(?string $type): bool
     {
-        return $type == 'string'
-            || $type == 'boolean' || $type == 'bool'
-            || $type == 'integer' || $type == 'int'
-            || $type == 'double' || $type == 'float'
-            || $type == 'array' || $type == 'object';
+        return $type === 'string'
+            || $type === 'boolean' || $type === 'bool'
+            || $type === 'integer' || $type === 'int'
+            || $type === 'double' || $type === 'float'
+            || $type === 'array' || $type === 'object';
     }
 }

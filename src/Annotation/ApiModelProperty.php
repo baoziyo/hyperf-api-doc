@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hyperf\ApiDocs\Annotation;
+namespace Baoziyoo\Hyperf\ApiDocs\Annotation;
 
 use Attribute;
 use Hyperf\Di\Annotation\AbstractAnnotation;
@@ -15,7 +15,7 @@ class ApiModelProperty extends AbstractAnnotation
         public ?string $value = null,
         public mixed $example = Generator::UNDEFINED,
         public bool $hidden = false,
-        public ?bool $required = null)
-    {
+        public ?bool $required = null
+    ) {
     }
 }

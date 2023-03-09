@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace HyperfExample\ApiDocs\Controller;
+namespace Baoziyoo\Hyperf\Example\Controller;
 
 use App\Model\Activity;
-use Hyperf\ApiDocs\Annotation\Api;
-use Hyperf\ApiDocs\Annotation\ApiFormData;
-use Hyperf\ApiDocs\Annotation\ApiHeader;
-use Hyperf\ApiDocs\Annotation\ApiOperation;
-use Hyperf\ApiDocs\Annotation\ApiResponse;
-use Hyperf\ApiDocs\Annotation\ApiSecurity;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\Api;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiFormData;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiHeader;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiOperation;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiResponse;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiSecurity;
 use Hyperf\Database\Model\Relations\HasOne;
-use Hyperf\DTO\Annotation\Contracts\RequestBody;
-use Hyperf\DTO\Annotation\Contracts\RequestFormData;
-use Hyperf\DTO\Annotation\Contracts\RequestHeader;
-use Hyperf\DTO\Annotation\Contracts\RequestQuery;
-use Hyperf\DTO\Annotation\Contracts\Valid;
+use Baoziyoo\Hyperf\DTO\Annotation\Contracts\RequestBody;
+use Baoziyoo\Hyperf\DTO\Annotation\Contracts\RequestFormData;
+use Baoziyoo\Hyperf\DTO\Annotation\Contracts\RequestHeader;
+use Baoziyoo\Hyperf\DTO\Annotation\Contracts\RequestQuery;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Contracts\Valid;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;
 use Hyperf\HttpServer\Annotation\GetMapping;
@@ -24,15 +24,15 @@ use Hyperf\HttpServer\Annotation\PatchMapping;
 use Hyperf\HttpServer\Annotation\PostMapping;
 use Hyperf\HttpServer\Annotation\PutMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
-use HyperfExample\ApiDocs\DTO\Address;
-use HyperfExample\ApiDocs\DTO\Header\DemoToken;
-use HyperfExample\ApiDocs\DTO\PageQuery;
-use HyperfExample\ApiDocs\DTO\Request\DemoBodyRequest;
-use HyperfExample\ApiDocs\DTO\Request\DemoFormData;
-use HyperfExample\ApiDocs\DTO\Request\DemoQuery;
-use HyperfExample\ApiDocs\DTO\Response\ActivityPage;
-use HyperfExample\ApiDocs\DTO\Response\ActivityResponse;
-use HyperfExample\ApiDocs\DTO\Response\Contact;
+use Baoziyoo\Hyperf\Example\DTO\Address;
+use Baoziyoo\Hyperf\Example\DTO\Header\DemoToken;
+use Baoziyoo\Hyperf\Example\DTO\PageQuery;
+use Baoziyoo\Hyperf\Example\DTO\Request\DemoBodyRequest;
+use Baoziyoo\Hyperf\Example\DTO\Request\DemoFormData;
+use Baoziyoo\Hyperf\Example\DTO\Request\DemoQuery;
+use Baoziyoo\Hyperf\Example\DTO\Response\ActivityPage;
+use Baoziyoo\Hyperf\Example\DTO\Response\ActivityResponse;
+use Baoziyoo\Hyperf\Example\DTO\Response\Contact;
 use JetBrains\PhpStorm\Deprecated;
 
 #[Controller(prefix: '/exampleDemo')]

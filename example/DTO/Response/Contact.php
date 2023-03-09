@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace HyperfExample\ApiDocs\DTO\Response;
+namespace Baoziyoo\Hyperf\Example\DTO\Response;
 
-use Hyperf\ApiDocs\Annotation\ApiModelProperty;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiModelProperty;
+use Baoziyoo\Hyperf\Example\DTO\Address;
 
 class Contact
 {
@@ -22,7 +23,7 @@ class Contact
 
     /**
      * 需要绝对路径.
-     * @var \HyperfExample\ApiDocs\DTO\Address[]
+     * @var Address[]
      */
     #[ApiModelProperty('地址')]
     public array $addressArr;

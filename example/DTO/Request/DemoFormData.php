@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace HyperfExample\ApiDocs\DTO\Request;
+namespace Baoziyoo\Hyperf\Example\DTO\Request;
 
-use Hyperf\ApiDocs\Annotation\ApiModelProperty;
-use Hyperf\DTO\Annotation\Validation\Between;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiModelProperty;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\Between;
 
 class DemoFormData
 {

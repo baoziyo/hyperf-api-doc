@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Hyperf\ApiDocs;
+namespace Baoziyoo\Hyperf\ApiDocs;
 
-use Hyperf\ApiDocs\Listener\AfterDtoStartListener;
-use Hyperf\ApiDocs\Listener\AfterWorkerStartListener;
-use Hyperf\ApiDocs\Listener\BootAppRouteListener;
+use Baoziyoo\Hyperf\ApiDocs\Listener\AfterDtoStartListener;
+use Baoziyoo\Hyperf\ApiDocs\Listener\AfterWorkerStartListener;
+use Baoziyoo\Hyperf\ApiDocs\Listener\BootAppRouteListener;
 
 class ConfigProvider
 {

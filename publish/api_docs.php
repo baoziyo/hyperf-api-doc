@@ -8,8 +8,6 @@ return [
     'format' => 'json',
     'output_dir' => BASE_PATH . '/runtime/swagger',
     'prefix_url' => env('API_DOCS_PREFIX_URL', '/swagger'),
-    // 替换验证属性
-    'validation_custom_attributes' => true,
     // 全局responses
     'responses' => [
         ['response' => 401, 'description' => 'Unauthorized'],

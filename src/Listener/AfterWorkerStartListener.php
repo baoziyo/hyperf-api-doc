@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Hyperf\ApiDocs\Listener;
+namespace Baoziyoo\Hyperf\ApiDocs\Listener;
 
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
@@ -11,7 +11,7 @@ use Hyperf\Server\Event\MainCoroutineServerStart;
 
 class AfterWorkerStartListener implements ListenerInterface
 {
-    public function __construct(private StdoutLoggerInterface $logger)
+    public function __construct(private readonly StdoutLoggerInterface $logger)
     {
     }
 

@@ -2,25 +2,24 @@
 
 declare(strict_types=1);
 
-namespace HyperfExample\ApiDocs\DTO\Request;
+namespace Baoziyoo\Hyperf\Example\DTO\Request;
 
-use Hyperf\ApiDocs\Annotation\ApiModelProperty;
-use Hyperf\DTO\Annotation\Validation\Between;
-use Hyperf\DTO\Annotation\Validation\In;
-use Hyperf\DTO\Annotation\Validation\Integer;
-use Hyperf\DTO\Annotation\Validation\Max;
-use Hyperf\DTO\Annotation\Validation\Regex;
-use Hyperf\DTO\Annotation\Validation\Required;
-use Hyperf\DTO\Annotation\Validation\StartsWith;
-use Hyperf\DTO\Annotation\Validation\Str;
-use HyperfExample\ApiDocs\DTO\PageQuery;
-use HyperfExample\ApiDocs\Enum\StatusEnum;
+use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiModelProperty;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\Between;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\In;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\Integer;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\Max;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\Regex;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\Required;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\StartsWith;
+use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\Str;
+use Baoziyoo\Hyperf\Example\DTO\PageQuery;
+use Baoziyoo\Hyperf\Example\Enum\StatusEnum;
 
 class DemoQuery extends PageQuery
 {
-
     #[ApiModelProperty('状态')]
-    //#[Required]
+    // #[Required]
     public StatusEnum $statusEnum;
 
     #[ApiModelProperty('测试', 'bb')]
@@ -38,7 +37,7 @@ class DemoQuery extends PageQuery
     #[Str]
     #[Regex('/^.+@.+$/i')]
     #[StartsWith('aa,bb')]
-    #[max(10,'超长啦....')]
+    #[max(10, '超长啦....')]
     public string $email;
 
     #[ApiModelProperty('数量')]
