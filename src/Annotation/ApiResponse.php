@@ -18,10 +18,11 @@ use Hyperf\Di\Annotation\AbstractMultipleAnnotation;
 class ApiResponse extends AbstractMultipleAnnotation
 {
     public function __construct(
-        public string|int|null $response = null,
-        public string $description = '',
         public ?string $type = null,
-        public bool $isArray = false,
+        public string $mode = 'simple',
+        public string|int $response = '',
+        public string $description = '',
+        public bool $isArray = true,
     ) {
     }
 }

@@ -20,15 +20,16 @@ use Psr\Container\ContainerInterface;
 class GenerateResponses
 {
     public function __construct(
-        private readonly string $className,
-        private readonly string $methodName,
-        private readonly array $apiResponseArr,
-        private readonly SwaggerConfig $swaggerConfig,
+        private readonly string                             $className,
+        private readonly string                             $methodName,
+        private readonly array                              $apiResponseArr,
+        private readonly SwaggerConfig                      $swaggerConfig,
         private readonly MethodDefinitionCollectorInterface $methodDefinitionCollector,
-        private readonly ContainerInterface $container,
-        private readonly SwaggerComponents $swaggerComponents,
-        private readonly SwaggerCommon $common,
-    ) {
+        private readonly ContainerInterface                 $container,
+        private readonly SwaggerComponents                  $swaggerComponents,
+        private readonly SwaggerCommon                      $common,
+    )
+    {
     }
 
     /**
@@ -118,10 +119,10 @@ class GenerateResponses
         $resp = [];
         foreach ($this->swaggerConfig->getResponses() as $value) {
             $apiResponse = new ApiResponse();
-            $apiResponse->response = $value['response'];
+            $apiResponse->type = $value['type'] ?? null;
+            $apiResponse->response = $value['response'] ?? null;
             $apiResponse->description = $value['description'] ?? null;
-            !empty($value['type']) && $apiResponse->type = $value['type'];
-            !empty($value['isArray']) && $apiResponse->isArray = $value['isArray'];
+            $apiResponse->isArray = $value['isArray'] ?? true;
 
             $resp[$apiResponse->response] = $this->getOAResp($apiResponse);
         }
