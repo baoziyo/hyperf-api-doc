@@ -22,7 +22,7 @@ class ApiResponse extends AbstractMultipleAnnotation
         public string $mode = 'simple',
         public string|int $response = '',
         public string $description = '',
-        public bool $isArray = true,
+        public bool $isArray = false,
     ) {
     }
 }
