@@ -14,6 +14,7 @@ namespace Baoziyoo\Hyperf\ApiDocs\Swagger;
 use Baoziyoo\Hyperf\ApiDocs\Annotation\ApiResponse;
 use Hyperf\Di\MethodDefinitionCollectorInterface;
 use Hyperf\Utils\Arr;
+use OpenApi\Annotations\Schema;
 use OpenApi\Attributes as OA;
 use Psr\Container\ContainerInterface;
 
@@ -59,12 +60,21 @@ class GenerateResponses
         return array_values($arr);
     }
 
-    protected function getContent(string $returnTypeClassName, bool $isArray = false): array
+    protected function getContent(string $returnTypeClassName, bool $isArray = false, string $mode = 'simple'): array
     {
         $arr = [];
         $mediaType = new OA\MediaType();
 
         $mediaTypeStr = 'text/plain';
+        $parentSchema = new OA\Schema();
+        $parentSchema->type = 'object';
+        $parentSchema->properties = [
+            new OA\Property(property: 'code', type: 'int', default: 200),
+            new OA\Property(property: 'message', type: 'string', default: '操作成功.'),
+            new OA\Property(property: 'time', type: 'int', default: time()),
+        ];
+        $mediaTypeStr = 'application/json';
+
         // 简单类型
         if ($this->common->isSimpleType($returnTypeClassName)) {
             $schema = new OA\Schema();
@@ -77,10 +87,27 @@ class GenerateResponses
                 $items->type = $this->common->getSwaggerType($returnTypeClassName);
                 $schema->items = $items;
             }
-            $mediaType->schema = $schema;
+            $parentSchema->properties[] = new OA\Property(property: 'data', schema: $schema);
+            $mediaType->schema = $parentSchema;
         } elseif ($this->container->has($returnTypeClassName)) {
             $mediaTypeStr = 'application/json';
-            $mediaType->schema = $this->getJsonContent($returnTypeClassName, $isArray);
+
+            $this->swaggerComponents->generateSchemas($returnTypeClassName);
+            if ($isArray) {
+                $items = new OA\Items();
+                $items->ref = $this->common->getComponentsName($returnTypeClassName);
+                if ($mode === 'complex') {
+                    $parentSchema->properties[] = new OA\Property(property: 'data', properties: [
+                        new OA\Property(property: 'list', items: $items),
+                        new OA\Property(property: 'count', type: 'int', default: 1),
+                    ], type: 'object');
+                } else {
+                    $parentSchema->properties[] = new OA\Property(property: 'data', items: $items);
+                }
+            } else {
+                $parentSchema->properties[] = new OA\Property(property: 'data', ref: $this->common->getComponentsName($returnTypeClassName));
+            }
+            $mediaType->schema = $parentSchema;
         } else {
             // 其他类型数据 eg:mixed
             return [];
@@ -94,7 +121,7 @@ class GenerateResponses
     /**
      * 获取返回类型的JsonContent.
      */
-    protected function getJsonContent(string $returnTypeClassName, bool $isArray): OA\JsonContent
+    protected function getJsonContent(string $returnTypeClassName, bool $isArray, string $mode = 'simple'): OA\JsonContent
     {
         $jsonContent = new OA\JsonContent();
         $this->swaggerComponents->generateSchemas($returnTypeClassName);
@@ -135,7 +162,7 @@ class GenerateResponses
         $response->response = $apiResponse->response;
         $response->description = $apiResponse->description;
         if (!empty($apiResponse->type)) {
-            $content = $this->getContent($apiResponse->type, $apiResponse->isArray);
+            $content = $this->getContent($apiResponse->type, $apiResponse->isArray, $apiResponse->mode);
             $content && $response->content = $content;
         }
         return $response;
