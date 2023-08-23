@@ -77,6 +77,7 @@ class GenerateResponses
 
         // 简单类型
         if ($this->common->isSimpleType($returnTypeClassName)) {
+            $this->swaggerComponents->generateSchemas($returnTypeClassName);
             $schema = new OA\Schema();
             $schema->type = $this->common->getSwaggerType($returnTypeClassName);
             // 数组
@@ -96,13 +97,15 @@ class GenerateResponses
             if ($isArray) {
                 $items = new OA\Items();
                 $items->ref = $this->common->getComponentsName($returnTypeClassName);
+                $items->schema = $this->common->getComponentsName($returnTypeClassName);
+
                 if ($mode === 'complex') {
                     $parentSchema->properties[] = new OA\Property(property: 'data', properties: [
-                        new OA\Property(property: 'list', items: $items),
+                        new OA\Property(property: 'list', type: 'array', items: $items),
                         new OA\Property(property: 'count', type: 'int', default: 1),
                     ], type: 'object');
                 } else {
-                    $parentSchema->properties[] = new OA\Property(property: 'data', items: $items);
+                    $parentSchema->properties[] = new OA\Property(property: 'data', type: 'array', items: $items);
                 }
             } else {
                 $parentSchema->properties[] = new OA\Property(property: 'data', ref: $this->common->getComponentsName($returnTypeClassName));

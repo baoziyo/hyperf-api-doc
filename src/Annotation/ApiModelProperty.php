@@ -22,7 +22,8 @@ class ApiModelProperty extends AbstractAnnotation
         public ?string $value = null,
         public mixed $example = Generator::UNDEFINED,
         public bool $hidden = false,
-        public ?bool $required = null
+        public ?bool $required = null,
+        public ?bool $array = false
     ) {
     }
 }

@@ -42,8 +42,7 @@ class GenerateParameters
         private readonly MethodDefinitionCollectorInterface $methodDefinitionCollector,
         private readonly SwaggerComponents $swaggerComponents,
         private readonly SwaggerCommon $common
-    )
-    {
+    ) {
     }
 
     public function generate(): array
@@ -88,10 +87,10 @@ class GenerateParameters
                     $result['requestBody'] = $requestBody;
                 }
                 if ($methodParameter->isRequestQuery()) {
-                    $parameterArr += $this->getParameterArrByClass($parameterClassName, 'query');
+                    $parameterArr = [...$parameterArr, ...$this->getParameterArrByClass($parameterClassName, 'query')];
                 }
                 if ($methodParameter->isRequestHeader()) {
-                    $parameterArr += $this->getParameterArrByClass($parameterClassName, 'header');
+                    $parameterArr = [...$parameterArr, ...$this->getParameterArrByClass($parameterClassName, 'header')];
                 }
                 if ($methodParameter->isRequestFormData()) {
                     $requestFormDataclass = $parameterClassName;
@@ -132,43 +131,64 @@ class GenerateParameters
         $parameters = [];
         $rc = ReflectionManager::reflectClass($parameterClassName);
         foreach ($rc->getProperties() ?? [] as $reflectionProperty) {
-            $parameter = new OA\Parameter();
-            $schema = new OA\Schema();
-            $parameter->name = $reflectionProperty->getName();
-            $parameter->in = $in;
-            try {
-                $schema->default = $reflectionProperty->getValue(make($parameterClassName));
-            } catch (Throwable) {
+            if ($reflectionProperty->name === 'currentDto') {
+                continue;
             }
             $phpType = $this->common->getTypeName($reflectionProperty);
-            $enum = PropertyManager::getProperty($phpType, $reflectionProperty->name)?->enum;
-            if ($enum) {
-                $phpType = $enum->backedType;
-            }
-            $schema->type = $this->common->getSwaggerType($phpType);
-
             $apiModelProperty = ApiAnnotation::getProperty($parameterClassName, $reflectionProperty->getName(), ApiModelProperty::class);
+
             $apiModelProperty = $apiModelProperty ?: new ApiModelProperty();
             if ($apiModelProperty->hidden) {
                 continue;
             }
-            $requiredAnnotation = ApiAnnotation::getProperty($parameterClassName, $reflectionProperty->getName(), Required::class);
-            /** @var In $inAnnotation */
-            $inAnnotation = ApiAnnotation::getProperty($parameterClassName, $reflectionProperty->getName(), In::class);
-            if ($inAnnotation !== null) {
-                $schema->enum = $inAnnotation->getValue();
+
+            if (isset($apiModelProperty->array) && $apiModelProperty->array === true && $in === 'query') {
+                $children = ReflectionManager::reflectClass($phpType);
+                foreach ($children->getProperties() ?? [] as $item) {
+                    if ($item->name === 'currentDto') {
+                        continue;
+                    }
+                    $itemProperty = ApiAnnotation::getProperty($item->class, $item->name, ApiModelProperty::class);
+
+                    $parameter = new OA\Parameter();
+                    $parameter->name = $reflectionProperty->getName() . '[' . $item->getName() . ']';
+                    $parameter->in = $in;
+                    $parameter->description = $itemProperty->value ?? '';
+                    $parameters[] = $parameter;
+                }
+            } else {
+                $parameter = new OA\Parameter();
+                $schema = new OA\Schema();
+                $parameter->name = $reflectionProperty->getName();
+                $parameter->in = $in;
+                try {
+                    $schema->default = $reflectionProperty->getValue(make($parameterClassName));
+                } catch (Throwable) {
+                }
+                $enum = PropertyManager::getProperty($phpType, $reflectionProperty->name)?->enum;
+                if ($enum) {
+                    $phpType = $enum->backedType;
+                }
+                $schema->type = $this->common->getSwaggerType($phpType);
+
+                $requiredAnnotation = ApiAnnotation::getProperty($parameterClassName, $reflectionProperty->getName(), Required::class);
+                /** @var In $inAnnotation */
+                $inAnnotation = ApiAnnotation::getProperty($parameterClassName, $reflectionProperty->getName(), In::class);
+                if ($inAnnotation !== null) {
+                    $schema->enum = $inAnnotation->getValue();
+                }
+                if ($enum !== null) {
+                    $schema->enum = $enum->valueList;
+                }
+                if ($apiModelProperty->required !== null) {
+                    $parameter->required = $apiModelProperty->required;
+                }
+                if ($requiredAnnotation !== null) {
+                    $parameter->required = true;
+                }
+                $parameter->description = $apiModelProperty->value ?? '';
+                $parameters[] = $parameter;
             }
-            if ($enum !== null) {
-                $schema->enum = $enum->valueList;
-            }
-            if ($apiModelProperty->required !== null) {
-                $parameter->required = $apiModelProperty->required;
-            }
-            if ($requiredAnnotation !== null) {
-                $parameter->required = true;
-            }
-            $parameter->description = $apiModelProperty->value ?? '';
-            $parameters[] = $parameter;
         }
         return $parameters;
     }
