@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Baoziyoo\Hyperf\ApiDocs\Swagger;
 
+use Psr\Http\Message\UploadedFileInterface;
 use ReflectionProperty;
 use Throwable;
 
@@ -69,6 +70,7 @@ class SwaggerCommon
             'double', 'float', 'number' => 'number',
             'array' => 'array',
             'object' => 'object',
+            UploadedFileInterface::class => 'file',
             default => 'string',
         };
     }

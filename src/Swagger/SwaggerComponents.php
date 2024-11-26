@@ -19,6 +19,7 @@ use Baoziyoo\Hyperf\DTO\Validation\Annotation\Rule\In;
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Di\ReflectionManager;
 use OpenApi\Attributes as OA;
+use Psr\Http\Message\UploadedFileInterface;
 
 class SwaggerComponents
 {
@@ -88,7 +89,6 @@ class SwaggerComponents
                     // $items->type = 'string';  可选
                     $property->items = $items;
                 } else {
-                    // 普通简单类型
                     $property->type = $swaggerType;
                 }
             } // 枚举:in
